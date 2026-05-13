@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Quan tri{% endblock %}
+{% block content %}
+<h4 class="mb-4">Bang quan tri</h4>
+<div class="row mb-4">
+<div class="col-md-4"><div class="card text-center p-3 border-primary">
+<h2 class="text-primary">{{ total_topics }}</h2><p>Chu de</p></div></div>
+<div class="col-md-4"><div class="card text-center p-3 border-success">
+<h2 class="text-success">{{ total_posts }}</h2><p>Bai viet</p></div></div>
+<div class="col-md-4"><div class="card text-center p-3 border-warning">
+<h2 class="text-warning">{{ total_users }}</h2><p>Nguoi dung</p></div></div>
+</div>
+<div class="card p-3">
+<h5>Chu de gan day</h5>
+<table class="table table-hover">
+<thead><tr><th>Tieu de</th><th>Tac gia</th><th>Danh muc</th><th>Hanh dong</th></tr></thead>
+<tbody>
+{% for topic in recent_topics %}
+<tr>
+<td><a href="{% url 'forum:topic_detail' topic.pk %}">{{ topic.title|truncatechars:40 }}</a></td>
+<td>{{ topic.author.username }}</td>
+<td>{{ topic.category.name }}</td>
+<td>
+<a href="{% url 'moderation:pin_topic' topic.pk %}" class="btn btn-sm btn-outline-warning">{% if topic.is_pinned %}Bo ghim{% else %}Ghim{% endif %}</a>
+<a href="{% url 'moderation:lock_topic' topic.pk %}" class="btn btn-sm btn-outline-dark ms-1">{% if topic.is_locked %}Mo khoa{% else %}Khoa{% endif %}</a>
+</td>
+</tr>
+{% endfor %}
+</tbody></table>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6"><div class="card p-4 text-center">
+<h4>Xoa chu de nay?</h4>
+<p>Ban co chac muon xoa <strong>{{ topic.title }}</strong>?</p>
+<form method="post">{% csrf_token %}
+<button type="submit" class="btn btn-danger me-2">Xoa</button>
+<a href="{% url 'forum:topic_detail' topic.pk %}" class="btn btn-outline-secondary">Huy</a>
+</form></div></div></div>
+{% endblock %}

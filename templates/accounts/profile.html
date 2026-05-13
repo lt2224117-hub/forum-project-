@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Ho so - {{ profile_user.username }}{% endblock %}
+{% block content %}
+<div class="row">
+<div class="col-md-4"><div class="card p-4 text-center">
+<i class="bi bi-person-circle" style="font-size:5rem;color:#667eea"></i>
+<h4 class="mt-2">{{ profile_user.username }}</h4>
+<p class="text-muted">{{ profile.bio|default:"Chua co gioi thieu" }}</p>
+<hr>
+<div class="d-flex justify-content-around">
+<div><strong>{{ topics.count }}</strong><br><small>Chu de</small></div>
+<div><strong>{{ posts.count }}</strong><br><small>Bai viet</small></div>
+</div>
+</div></div>
+<div class="col-md-8"><div class="card p-4">
+<h5>Chu de gan day</h5>
+{% for topic in topics %}
+<div class="border-bottom py-2">
+<a href="{% url 'forum:topic_detail' topic.pk %}">{{ topic.title }}</a>
+<small class="text-muted float-end">{{ topic.created_at|date:"d/m/Y" }}</small>
+</div>
+{% empty %}<p class="text-muted">Chua co chu de nao.</p>{% endfor %}
+</div></div>
+</div>
+{% endblock %}

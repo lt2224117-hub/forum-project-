@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Tim kiem{% endblock %}
+{% block content %}
+<div class="card p-4 mb-4">
+<form method="get">
+<div class="input-group">
+<input type="text" name="q" class="form-control form-control-lg" placeholder="Tim kiem chu de..." value="{{ query }}">
+<button type="submit" class="btn btn-primary px-4">Tim</button>
+</div>
+</form>
+</div>
+{% if query %}
+<h5>Ket qua cho "{{ query }}": {{ results.count }} chu de</h5>
+{% for topic in results %}
+<div class="card mb-2"><div class="card-body">
+<a href="{% url 'forum:topic_detail' topic.pk %}" class="fw-semibold text-decoration-none">{{ topic.title }}</a>
+<br><small class="text-muted">{{ topic.category.name }} - {{ topic.author.username }}</small>
+</div></div>
+{% empty %}
+<div class="alert alert-warning">Khong tim thay ket qua nao.</div>
+{% endfor %}
+{% endif %}
+{% endblock %}
