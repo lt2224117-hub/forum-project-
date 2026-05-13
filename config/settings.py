@@ -134,3 +134,7 @@ LOGOUT_REDIRECT_URL = '/'
 # Deploy settings
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Auto migrate on startup
+import subprocess
+import sys
+subprocess.run([sys.executable, 'manage.py', 'migrate', '--noinput'])
