@@ -144,3 +144,5 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
     DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
+
+CSRF_TRUSTED_ORIGINS = ['https://web-production-ad605.up.railway.app']
