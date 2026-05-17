@@ -11,4 +11,6 @@ RUN python manage.py collectstatic --no-input
 
 EXPOSE 8000
 RUN echo "v2" && python manage.py createsuperuser --noinput || true
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+CMD ["./entrypoint.sh"]
