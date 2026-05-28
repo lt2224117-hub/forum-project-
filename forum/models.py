@@ -28,6 +28,14 @@ class Topic(models.Model):
     views       = models.PositiveIntegerField(default=0)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
+    TAG_CHOICES = [
+        ('thac_mac', 'Thắc mắc'),
+        ('thao_luan', 'Thảo luận'),
+        ('danh_gia', 'Đánh giá'),
+        ('chia_se', 'Chia sẻ'),
+        ('huong_dan', 'Hướng dẫn'),
+        ]
+    tag = models.CharField(max_length=20, choices=TAG_CHOICES, blank=True, null=True, verbose_name='Tag')
 
     class Meta:
         verbose_name = 'Chủ đề'

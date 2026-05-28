@@ -1,5 +1,4 @@
-[start]
-cmd = "gunicorn config.wsgi:application"
-
-[build]
-cmds = ["pip install -r requirements.txt", "python manage.py collectstatic --no-input", "python manage.py migrate"]
+del nixpacks.toml
+git add nixpacks.toml
+git commit -m "remove nixpacks.toml"
+git push

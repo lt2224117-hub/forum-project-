@@ -1,24 +1,104 @@
-{% extends 'base.html' %}
-{% block title %}Tao chu de{% endblock %}
-{% block content %}
+{% extends 'base.html' %} {% block title %}Tao chu de{% endblock %} {% block
+content %}
 <div class="row justify-content-center">
-<div class="col-md-8">
-<div class="card p-4">
-<h4>{% if topic %}Sua chu de{% else %}Tao chu de moi trong "{{ category.name }}"{% endif %}</h4>
-<form method="post">
-{% csrf_token %}
-<div class="mb-3">
-<label class="form-label fw-semibold">Tieu de</label>
-<input type="text" name="title" class="form-control" value="{% if topic %}{{ topic.title }}{% endif %}" required>
-</div>
-<div class="mb-3">
-<label class="form-label fw-semibold">Noi dung</label>
-<textarea name="content" class="form-control" rows="8" required>{% if topic %}{{ topic.content }}{% endif %}</textarea>
-</div>
-<button type="submit" class="btn btn-primary">{% if topic %}Cap nhat{% else %}Dang chu de{% endif %}</button>
-<a href="{% url 'forum:home' %}" class="btn btn-outline-secondary ms-2">Huy</a>
-</form>
-</div>
-</div>
+  <div class="col-md-8">
+    <div class="card p-4">
+      <h4>
+        {% if topic %}Sua chu de{% else %}Tao chu de moi trong "{{ category.name
+        }}"{% endif %}
+      </h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Tieu de</label>
+          <input
+            type="text"
+            name="title"
+            class="form-control"
+            value="{% if topic %}{{ topic.title }}{% endif %}"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Noi dung</label>
+          <textarea name="content" class="form-control" rows="8" required>
+{% if topic %}{{ topic.content }}{% endif %}</textarea
+          >
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Tag</label>
+          <select name="tag" class="form-control">
+            <option value="">-- Không có tag --</option>
+            <option
+              value="thac_mac"
+              {%
+              if
+              topic.tag=""
+              ="thac_mac"
+              %}selected{%
+              endif
+              %}
+            >
+              Thắc mắc
+            </option>
+            <option
+              value="thao_luan"
+              {%
+              if
+              topic.tag=""
+              ="thao_luan"
+              %}selected{%
+              endif
+              %}
+            >
+              Thảo luận
+            </option>
+            <option
+              value="danh_gia"
+              {%
+              if
+              topic.tag=""
+              ="danh_gia"
+              %}selected{%
+              endif
+              %}
+            >
+              Đánh giá
+            </option>
+            <option
+              value="chia_se"
+              {%
+              if
+              topic.tag=""
+              ="chia_se"
+              %}selected{%
+              endif
+              %}
+            >
+              Chia sẻ
+            </option>
+            <option
+              value="huong_dan"
+              {%
+              if
+              topic.tag=""
+              ="huong_dan"
+              %}selected{%
+              endif
+              %}
+            >
+              Hướng dẫn
+            </option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          {% if topic %}Cap nhat{% else %}Dang chu de{% endif %}
+        </button>
+        <a href="{% url 'forum:home' %}" class="btn btn-outline-secondary ms-2"
+          >Huy</a
+        >
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

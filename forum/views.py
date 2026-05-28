@@ -43,10 +43,12 @@ def topic_create(request, category_slug):
     if request.method == 'POST':
         title = request.POST.get('title')
         content = request.POST.get('content')
+        tag = request.POST.get('tag', '')
         if title and content:
             topic = Topic.objects.create(
                 title=title, content=content,
-                author=request.user, category=category
+                author=request.user, category=category,
+                tag=tag
             )
             messages.success(request, 'Tạo chủ đề thành công!')
             return redirect('forum:topic_detail', pk=topic.pk)
