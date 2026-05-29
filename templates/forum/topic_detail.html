@@ -68,7 +68,8 @@ block content %}
       href="{% url 'interaction:like_post' post.pk %}"
       class="btn btn-sm btn-outline-danger float-end"
       >{{ post.likes.count }} Like</a
-    >{% endif %} {% if user == post.author or user.is_staff %}
+    >{% endif %} 
+    {% if user == post.author or user.is_staff %}
     <a
       href="{% url 'forum:post_edit' post.pk %}"
       class="btn btn-sm btn-outline-secondary float-end me-1"
