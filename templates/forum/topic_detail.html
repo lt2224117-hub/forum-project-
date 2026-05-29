@@ -1,103 +1,68 @@
-{% extends 'base.html' %} {% block title %}{{ topic.title }}{% endblock %} {%
-block content %}
+{% extends 'base.html' %}
+
+{% block title %}{{ topic.title }}{% endblock %}
+
+{% block content %}
 <div class="card mb-3">
   <div class="card-body">
     <h4>
-      {% if topic.is_pinned %}<span class="badge bg-danger">Ghim</span>{% endif
-      %} {% if topic.is_locked %}<span class="badge bg-warning">Khoa</span>{%
-      endif %} {{ topic.title }}
+      {% if topic.is_pinned %}<span class="badge bg-danger">Ghim</span>{% endif %}
+      {% if topic.is_locked %}<span class="badge bg-warning">Khoa</span>{% endif %}
+      {{ topic.title }}
     </h4>
     {% if topic.tag %}
-    <span
-      class="badge {% if topic.tag == 'thac_mac' %}bg-danger {% elif topic.tag == 'thao_luan' %}bg-primary {% elif topic.tag == 'danh_gia' %}bg-success {% elif topic.tag == 'chia_se' %}bg-info {% elif topic.tag == 'huong_dan' %}bg-warning {% endif %}"
-    >
+    <span class="badge {% if topic.tag == 'thac_mac' %}bg-danger{% elif topic.tag == 'thao_luan' %}bg-primary{% elif topic.tag == 'danh_gia' %}bg-success{% elif topic.tag == 'chia_se' %}bg-info{% elif topic.tag == 'huong_dan' %}bg-warning{% endif %}">
       {{ topic.get_tag_display }}
     </span>
     {% endif %}
-    <small class="text-muted"
-      >Boi {{ topic.author.username }} - {{ topic.created_at|date:"d/m/Y H:i" }}
-      - {{ topic.views }} luot xem</small
-    >
+    <small class="text-muted">Boi {{ topic.author.username }} - {{ topic.created_at|date:"d/m/Y H:i" }} - {{ topic.views }} luot xem</small>
     {% if user == topic.author or user.is_staff %}
     <div class="mt-2">
-      <a
-        href="{% url 'forum:topic_edit' topic.pk %}"
-        class="btn btn-sm btn-outline-secondary"
-        >Sua</a
-      >
-      <a
-        href="{% url 'forum:topic_delete' topic.pk %}"
-        class="btn btn-sm btn-outline-danger"
-        >Xoa</a
-      >
-      {% if user.is_staff %}<a
-        href="{% url 'moderation:pin_topic' topic.pk %}"
-        class="btn btn-sm btn-outline-warning"
-        >{% if topic.is_pinned %}Bo ghim{% else %}Ghim{% endif %}</a
-      >
-      <a
-        href="{% url 'moderation:lock_topic' topic.pk %}"
-        class="btn btn-sm btn-outline-dark"
-        >{% if topic.is_locked %}Mo khoa{% else %}Khoa{% endif %}</a
-      >{% endif %}
+      <a href="{% url 'forum:topic_edit' topic.pk %}" class="btn btn-sm btn-outline-secondary">Sua</a>
+      <a href="{% url 'forum:topic_delete' topic.pk %}" class="btn btn-sm btn-outline-danger">Xoa</a>
+      {% if user.is_staff %}
+      <a href="{% url 'moderation:pin_topic' topic.pk %}" class="btn btn-sm btn-outline-warning">{% if topic.is_pinned %}Bo ghim{% else %}Ghim{% endif %}</a>
+      <a href="{% url 'moderation:lock_topic' topic.pk %}" class="btn btn-sm btn-outline-dark">{% if topic.is_locked %}Mo khoa{% else %}Khoa{% endif %}</a>
+      {% endif %}
     </div>
     {% endif %}
     <hr />
     <p>{{ topic.content|linebreaks }}</p>
     {% if user.is_authenticated %}
-    <a
-      href="{% url 'interaction:vote_topic' topic.pk 1 %}"
-      class="btn btn-sm btn-outline-success"
-      >Upvote</a
-    >
-    <a
-      href="{% url 'interaction:vote_topic' topic.pk -1 %}"
-      class="btn btn-sm btn-outline-danger"
-      >Downvote</a
-    >
+    <a href="{% url 'interaction:vote_topic' topic.pk 1 %}" class="btn btn-sm btn-outline-success">Upvote</a>
+    <a href="{% url 'interaction:vote_topic' topic.pk -1 %}" class="btn btn-sm btn-outline-danger">Downvote</a>
     {% endif %}
   </div>
 </div>
+
 <h5>{{ posts.count }} binh luan</h5>
+
 {% for post in posts %}
 <div class="card mb-2">
   <div class="card-body">
     <strong>{{ post.author.username }}</strong>
-    <small class="text-muted">{{ post.created_at|date:"d/m/Y H:i" }}</small> 
-    {% if user.is_authenticated %}<a
-      href="{% url 'interaction:like_post' post.pk %}"
-      class="btn btn-sm btn-outline-danger float-end"
-      >{{ post.likes.count }} Like</a
-    >{% endif %} 
+    <small class="text-muted">{{ post.created_at|date:"d/m/Y H:i" }}</small>
+    {% if user.is_authenticated %}
+    <a href="{% url 'interaction:like_post' post.pk %}" class="btn btn-sm btn-outline-danger float-end">{{ post.likes.count }} Like</a>
+    {% endif %}
     {% if user == post.author or user.is_staff %}
-    <a
-      href="{% url 'forum:post_edit' post.pk %}"
-      class="btn btn-sm btn-outline-secondary float-end me-1"
-      >Sua</a
-    >
-    <a
-      href="{% url 'forum:post_delete' post.pk %}"
-      class="btn btn-sm btn-outline-danger float-end me-1"
-      >Xoa</a
-    >
+    <a href="{% url 'forum:post_edit' post.pk %}" class="btn btn-sm btn-outline-secondary float-end me-1">Sua</a>
+    <a href="{% url 'forum:post_delete' post.pk %}" class="btn btn-sm btn-outline-danger float-end me-1">Xoa</a>
     {% endif %}
     <p class="mt-2">{{ post.content|linebreaks }}</p>
   </div>
 </div>
 {% empty %}
 <div class="alert alert-light">Chua co binh luan nao.</div>
-{% endfor %} {% if user.is_authenticated and not topic.is_locked %}
+{% endfor %}
+
+{% if user.is_authenticated and not topic.is_locked %}
 <div class="card mt-3">
   <div class="card-body">
     <h6>Viet binh luan</h6>
     <form method="post">
       {% csrf_token %}
-      <textarea
-        name="content"
-        class="form-control mb-2"
-        rows="4"
-        required
-      ></textarea>
+      <textarea name="content" class="form-control mb-2" rows="4" required></textarea>
       <button type="submit" class="btn btn-primary">Gui</button>
     </form>
   </div>
@@ -106,5 +71,6 @@ block content %}
 <div class="alert alert-info mt-3">
   <a href="{% url 'accounts:login' %}">Dang nhap</a> de binh luan.
 </div>
-{% endif %} 
+{% endif %}
+
 {% endblock %}
