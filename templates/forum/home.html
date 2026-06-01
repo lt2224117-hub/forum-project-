@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
-{% block title %}Trang chu - ForumVN{% endblock %}
+{% block title %}Trang chủ - ForumVN{% endblock %}
 {% block content %}
 
 <div class="hero text-center mb-4">
-    <h1 class="fw-bold mb-2"><i class="bi bi-chat-dots-fill me-2"></i>Chao mung den ForumVN!</h1>
-    <p class="mb-3 opacity-75">Noi trao doi, hoc hoi va ket noi cong dong</p>
+    <h1 class="fw-bold mb-2"><i class="bi bi-chat-dots-fill me-2"></i>Chào mừng đến ForumVN!</h1>
+    <p class="mb-3 opacity-75">Nơi trao đổi, học hỏi và kết nối cộng đồng</p>
     {% if not user.is_authenticated %}
     <a href="{% url 'accounts:register' %}" class="btn btn-light text-primary fw-bold px-4 me-2">
         <i class="bi bi-person-plus me-1"></i>Tham gia ngay
     </a>
-    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light px-4">Dang nhap</a>
+    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light px-4">Đăng nhập</a>
     {% else %}
-    <p class="mb-0 fw-bold fs-5">Xin chao, {{ user.username }}! <i class="bi bi-hand-wave"></i></p>
+    <p class="mb-0 fw-bold fs-5">Xin chào, {{ user.username }}! <i class="bi bi-hand-wave"></i></p>
     {% endif %}
 </div>
 
 <div class="row">
     <div class="col-md-8">
-        <h5 class="fw-bold mb-3"><i class="bi bi-grid-fill text-primary me-2"></i>Chuyen muc</h5>
+        <h5 class="fw-bold mb-3"><i class="bi bi-grid-fill text-primary me-2"></i>Chuyên mục</h5>
         {% for category in categories %}
         <div class="card mb-3 topic-row">
             <div class="card-body d-flex align-items-center py-3">
@@ -36,33 +36,33 @@
                 </div>
                 <div class="text-end">
                     <span class="badge rounded-pill" style="background:linear-gradient(135deg,#667eea,#764ba2)">
-                        <i class="bi bi-chat-fill me-1"></i>{{ category.topics.count }} chu de
+                        <i class="bi bi-chat-fill me-1"></i>{{ category.topics.count }} chủ đề
                     </span>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="alert alert-info">Chua co chuyen muc. <a href="/admin">Tao ngay</a></div>
+        <div class="alert alert-info">Chưa có chuyên mục. <a href="/admin">Tạo ngay</a></div>
         {% endfor %}
     </div>
 
     <div class="col-md-4">
         <div class="card mb-3" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;">
             <div class="card-body">
-                <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill me-2"></i>Thong ke</h6>
+                <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill me-2"></i>Thống kê</h6>
                 <div class="d-flex justify-content-between mb-2">
-                    <span><i class="bi bi-folder me-1"></i>Chuyen muc</span>
+                    <span><i class="bi bi-folder me-1"></i>Chuyên mục</span>
                     <strong>{{ categories.count }}</strong>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
-                    <span><i class="bi bi-chat me-1"></i>Chu de</span>
+                    <span><i class="bi bi-chat me-1"></i>Chủ đề</span>
                     <strong>{{ recent_topics.count }}</strong>
                 </div>
             </div>
         </div>
 
         <div class="card p-3 mb-3">
-            <h6 class="fw-bold mb-3"><i class="bi bi-clock-history text-primary me-2"></i>Chu de moi nhat</h6>
+            <h6 class="fw-bold mb-3"><i class="bi bi-clock-history text-primary me-2"></i>Chủ đề mới nhất</h6>
             {% for topic in recent_topics %}
             <div class="d-flex align-items-start border-bottom py-2">
                 <div class="avatar-circle me-2" style="width:28px;height:28px;font-size:0.7rem;flex-shrink:0;">
@@ -82,9 +82,9 @@
         {% if not user.is_authenticated %}
         <div class="card p-3 text-center" style="border:2px dashed #667eea;">
             <i class="bi bi-people-fill text-primary fs-2 mb-2"></i>
-            <p class="mb-2 fw-semibold">Tham gia cong dong!</p>
-            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm mb-2 w-100">Dang ky mien phi</a>
-            <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary btn-sm w-100">Dang nhap</a>
+            <p class="mb-2 fw-semibold">Tham gia cộng đồng!</p>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm mb-2 w-100">Đăng ký miễn phí</a>
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary btn-sm w-100">Đăng nhập</a>
         </div>
         {% endif %}
     </div>
