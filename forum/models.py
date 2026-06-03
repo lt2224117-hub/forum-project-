@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
 
 class Category(models.Model):
@@ -21,6 +18,7 @@ class Category(models.Model):
 class Topic(models.Model):
     title       = models.CharField(max_length=200, verbose_name='Tiêu đề')
     content     = models.TextField(verbose_name='Nội dung')
+    image       = models.ImageField(upload_to='topics/', blank=True, null=True, verbose_name='Ảnh')
     author      = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics')
     category    = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='topics')
     is_pinned   = models.BooleanField(default=False, verbose_name='Ghim')
@@ -34,7 +32,7 @@ class Topic(models.Model):
         ('danh_gia', 'Đánh giá'),
         ('chia_se', 'Chia sẻ'),
         ('huong_dan', 'Hướng dẫn'),
-        ]
+    ]
     tag = models.CharField(max_length=20, choices=TAG_CHOICES, blank=True, null=True, verbose_name='Tag')
 
     class Meta:
@@ -50,6 +48,7 @@ class Post(models.Model):
     topic      = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='posts')
     author     = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     content    = models.TextField(verbose_name='Nội dung')
+    image      = models.ImageField(upload_to='posts/', blank=True, null=True, verbose_name='Ảnh')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

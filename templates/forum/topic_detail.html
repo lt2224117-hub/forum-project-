@@ -7,7 +7,7 @@
   <div class="card-body">
     <h4>
       {% if topic.is_pinned %}<span class="badge bg-danger">Ghim</span>{% endif %}
-      {% if topic.is_locked %}<span class="badge bg-warning">Khoa</span>{% endif %}
+      {% if topic.is_locked %}<span class="badge bg-warning">Khóa</span>{% endif %}
       {{ topic.title }}
     </h4>
     {% if topic.tag %}
@@ -15,19 +15,24 @@
       {{ topic.get_tag_display }}
     </span>
     {% endif %}
-    <small class="text-muted">Boi {{ topic.author.username }} - {{ topic.created_at|date:"d/m/Y H:i" }} - {{ topic.views }} luot xem</small>
+    <small class="text-muted">Bởi {{ topic.author.username }} - {{ topic.created_at|date:"d/m/Y H:i" }} - {{ topic.views }} lượt xem</small>
     {% if user == topic.author or user.is_staff %}
     <div class="mt-2">
-      <a href="{% url 'forum:topic_edit' topic.pk %}" class="btn btn-sm btn-outline-secondary">Sua</a>
-      <a href="{% url 'forum:topic_delete' topic.pk %}" class="btn btn-sm btn-outline-danger">Xoa</a>
+      <a href="{% url 'forum:topic_edit' topic.pk %}" class="btn btn-sm btn-outline-secondary">Sửa</a>
+      <a href="{% url 'forum:topic_delete' topic.pk %}" class="btn btn-sm btn-outline-danger">Xóa</a>
       {% if user.is_staff %}
-      <a href="{% url 'moderation:pin_topic' topic.pk %}" class="btn btn-sm btn-outline-warning">{% if topic.is_pinned %}Bo ghim{% else %}Ghim{% endif %}</a>
-      <a href="{% url 'moderation:lock_topic' topic.pk %}" class="btn btn-sm btn-outline-dark">{% if topic.is_locked %}Mo khoa{% else %}Khoa{% endif %}</a>
+      <a href="{% url 'moderation:pin_topic' topic.pk %}" class="btn btn-sm btn-outline-warning">{% if topic.is_pinned %}Bỏ ghim{% else %}Ghim{% endif %}</a>
+      <a href="{% url 'moderation:lock_topic' topic.pk %}" class="btn btn-sm btn-outline-dark">{% if topic.is_locked %}Mở khóa{% else %}Khóa{% endif %}</a>
       {% endif %}
     </div>
     {% endif %}
     <hr />
     <p>{{ topic.content|linebreaks }}</p>
+    {% if topic.image %}
+    <div class="mt-2 mb-3">
+      <img src="{{ topic.image.url }}" class="img-fluid rounded" style="max-height:400px;">
+    </div>
+    {% endif %}
     {% if user.is_authenticated %}
     <a href="{% url 'interaction:vote_topic' topic.pk 1 %}" class="btn btn-sm btn-outline-success">Upvote</a>
     <a href="{% url 'interaction:vote_topic' topic.pk -1 %}" class="btn btn-sm btn-outline-danger">Downvote</a>
@@ -35,7 +40,7 @@
   </div>
 </div>
 
-<h5>{{ posts.count }} binh luan</h5>
+<h5>{{ posts.count }} bình luận</h5>
 
 {% for post in posts %}
 <div class="card mb-2">
@@ -46,30 +51,39 @@
     <a href="{% url 'interaction:like_post' post.pk %}" class="btn btn-sm btn-outline-danger float-end">{{ post.likes.count }} Like</a>
     {% endif %}
     {% if user == post.author or user.is_staff %}
-    <a href="{% url 'forum:post_edit' post.pk %}" class="btn btn-sm btn-outline-secondary float-end me-1">Sua</a>
-    <a href="{% url 'forum:post_delete' post.pk %}" class="btn btn-sm btn-outline-danger float-end me-1">Xoa</a>
+    <a href="{% url 'forum:post_edit' post.pk %}" class="btn btn-sm btn-outline-secondary float-end me-1">Sửa</a>
+    <a href="{% url 'forum:post_delete' post.pk %}" class="btn btn-sm btn-outline-danger float-end me-1">Xóa</a>
     {% endif %}
     <p class="mt-2">{{ post.content|linebreaks }}</p>
+    {% if post.image %}
+    <div class="mt-2">
+      <img src="{{ post.image.url }}" class="img-fluid rounded" style="max-height:300px;">
+    </div>
+    {% endif %}
   </div>
 </div>
 {% empty %}
-<div class="alert alert-light">Chua co binh luan nao.</div>
+<div class="alert alert-light">Chưa có bình luận nào.</div>
 {% endfor %}
 
 {% if user.is_authenticated and not topic.is_locked %}
 <div class="card mt-3">
   <div class="card-body">
-    <h6>Viet binh luan</h6>
-    <form method="post">
+    <h6>Viết bình luận</h6>
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <textarea name="content" class="form-control mb-2" rows="4" required></textarea>
-      <button type="submit" class="btn btn-primary">Gui</button>
+      <div class="mb-2">
+        <label class="form-label small text-muted">Đính kèm ảnh (không bắt buộc)</label>
+        <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary">Gửi</button>
     </form>
   </div>
 </div>
 {% elif not user.is_authenticated %}
 <div class="alert alert-info mt-3">
-  <a href="{% url 'accounts:login' %}">Dang nhap</a> de binh luan.
+  <a href="{% url 'accounts:login' %}">Đăng nhập</a> để bình luận.
 </div>
 {% endif %}
 

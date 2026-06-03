@@ -1,102 +1,48 @@
 {% extends 'base.html' %}
-{% block title %}Tao chu de{% endblock %}
+{% block title %}{% if topic %}Sửa chủ đề{% else %}Tạo chủ đề{% endif %}{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-md-8">
     <div class="card p-4">
-      <h4>
-        {% if topic %}Sua chu de{% else %}Tao chu de moi trong "{{ category.name }}"{% endif %}
+      <h4 class="fw-bold mb-4">
+        {% if topic %}Sửa chủ đề{% else %}Tạo chủ đề mới trong "{{ category.name }}"{% endif %}
       </h4>
-      <form method="post">
+      <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
-          <label class="form-label fw-semibold">Tieu de</label>
-          <input
-            type="text"
-            name="title"
-            class="form-control"
-            value="{% if topic %}{{ topic.title }}{% endif %}"
-            required
-          />
+          <label class="form-label fw-semibold">Tiêu đề</label>
+          <input type="text" name="title" class="form-control"
+            value="{% if topic %}{{ topic.title }}{% endif %}" required />
         </div>
         <div class="mb-3">
-          <label class="form-label fw-semibold">Noi dung</label>
-          <textarea name="content" class="form-control" rows="8" required>
-{% if topic %}{{ topic.content }}{% endif %}</textarea
-          >
+          <label class="form-label fw-semibold">Nội dung</label>
+          <textarea name="content" class="form-control" rows="8" required>{% if topic %}{{ topic.content }}{% endif %}</textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Ảnh đính kèm <span class="text-muted fw-normal">(không bắt buộc)</span></label>
+          <input type="file" name="image" class="form-control" accept="image/*" />
+          {% if topic.image %}
+          <div class="mt-2">
+            <small class="text-muted">Ảnh hiện tại:</small><br>
+            <img src="{{ topic.image.url }}" class="img-thumbnail mt-1" style="max-height:150px;">
+          </div>
+          {% endif %}
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold">Tag</label>
           <select name="tag" class="form-control">
             <option value="">-- Không có tag --</option>
-            <option
-              value="thac_mac"
-              {%
-              if
-              topic.tag=""
-              ="thac_mac"
-              %}selected{%
-              endif
-              %}
-            >
-              Thắc mắc
-            </option>
-            <option
-              value="thao_luan"
-              {%
-              if
-              topic.tag=""
-              ="thao_luan"
-              %}selected{%
-              endif
-              %}
-            >
-              Thảo luận
-            </option>
-            <option
-              value="danh_gia"
-              {%
-              if
-              topic.tag=""
-              ="danh_gia"
-              %}selected{%
-              endif
-              %}
-            >
-              Đánh giá
-            </option>
-            <option
-              value="chia_se"
-              {%
-              if
-              topic.tag=""
-              ="chia_se"
-              %}selected{%
-              endif
-              %}
-            >
-              Chia sẻ
-            </option>
-            <option
-              value="huong_dan"
-              {%
-              if
-              topic.tag=""
-              ="huong_dan"
-              %}selected{%
-              endif
-              %}
-            >
-              Hướng dẫn
-            </option>
+            <option value="thac_mac" {% if topic.tag == "thac_mac" %}selected{% endif %}>Thắc mắc</option>
+            <option value="thao_luan" {% if topic.tag == "thao_luan" %}selected{% endif %}>Thảo luận</option>
+            <option value="danh_gia" {% if topic.tag == "danh_gia" %}selected{% endif %}>Đánh giá</option>
+            <option value="chia_se" {% if topic.tag == "chia_se" %}selected{% endif %}>Chia sẻ</option>
+            <option value="huong_dan" {% if topic.tag == "huong_dan" %}selected{% endif %}>Hướng dẫn</option>
           </select>
         </div>
         <button type="submit" class="btn btn-primary">
-          {% if topic %}Cap nhat{% else %}Dang chu de{% endif %}
+          {% if topic %}Cập nhật{% else %}Đăng chủ đề{% endif %}
         </button>
-        <a href="{% url 'forum:home' %}" class="btn btn-outline-secondary ms-2"
-          >Huy</a
-        >
+        <a href="{% url 'forum:home' %}" class="btn btn-outline-secondary ms-2">Hủy</a>
       </form>
     </div>
   </div>

@@ -7,14 +7,12 @@ from .models import Category, Topic, Post
 def home(request):
     categories = Category.objects.all()
     sort = request.GET.get('sort', 'new')
-    
     if sort == 'popular':
         recent_topics = Topic.objects.select_related('author', 'category').annotate(
             post_count=Count('posts')
         ).order_by('-post_count', '-created_at')[:10]
     else:
         recent_topics = Topic.objects.select_related('author', 'category').order_by('-created_at')[:10]
-    
     return render(request, 'forum/home.html', {
         'categories': categories,
         'recent_topics': recent_topics,
@@ -24,14 +22,12 @@ def home(request):
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     sort = request.GET.get('sort', 'new')
-    
     if sort == 'popular':
         topics = category.topics.select_related('author').annotate(
             post_count=Count('posts')
         ).order_by('-is_pinned', '-post_count', '-created_at')
     else:
         topics = category.topics.select_related('author').order_by('-is_pinned', '-created_at')
-    
     return render(request, 'forum/category_detail.html', {
         'category': category,
         'topics': topics,
@@ -46,8 +42,9 @@ def topic_detail(request, pk):
 
     if request.method == 'POST' and request.user.is_authenticated and not topic.is_locked:
         content = request.POST.get('content')
+        image = request.FILES.get('image')
         if content:
-            Post.objects.create(topic=topic, author=request.user, content=content)
+            Post.objects.create(topic=topic, author=request.user, content=content, image=image)
             messages.success(request, 'Đã gửi bình luận!')
             return redirect('forum:topic_detail', pk=pk)
 
@@ -63,11 +60,12 @@ def topic_create(request, category_slug):
         title = request.POST.get('title')
         content = request.POST.get('content')
         tag = request.POST.get('tag', '')
+        image = request.FILES.get('image')
         if title and content:
             topic = Topic.objects.create(
                 title=title, content=content,
                 author=request.user, category=category,
-                tag=tag
+                tag=tag, image=image
             )
             messages.success(request, 'Tạo chủ đề thành công!')
             return redirect('forum:topic_detail', pk=topic.pk)
@@ -79,6 +77,9 @@ def topic_edit(request, pk):
     if request.method == 'POST':
         topic.title = request.POST.get('title')
         topic.content = request.POST.get('content')
+        image = request.FILES.get('image')
+        if image:
+            topic.image = image
         topic.save()
         messages.success(request, 'Cập nhật thành công!')
         return redirect('forum:topic_detail', pk=topic.pk)
@@ -98,6 +99,9 @@ def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk, author=request.user)
     if request.method == 'POST':
         post.content = request.POST.get('content')
+        image = request.FILES.get('image')
+        if image:
+            post.image = image
         post.save()
         messages.success(request, 'Cập nhật bài viết thành công!')
         return redirect('forum:topic_detail', pk=post.topic.pk)
