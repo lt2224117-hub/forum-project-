@@ -89,6 +89,7 @@ body { background: #f0f2f5; font-family: "Segoe UI", sans-serif; margin: 0; }
   <div class="sidebar-section">
     <a href="{% url 'forum:home' %}" class="sidebar-link"><i class="bi bi-house-fill"></i>Trang chủ</a>
     <a href="{% url 'search:search' %}" class="sidebar-link"><i class="bi bi-search"></i>Tìm kiếm</a>
+    <a href="{% url 'forum:explore' %}" class="sidebar-link"><i class="bi bi-compass-fill"></i>Khám phá</a>
     {% if user.is_authenticated %}
     <a href="{% url 'accounts:profile' user.username %}" class="sidebar-link"><i class="bi bi-person-fill"></i>Hồ sơ của tôi</a>
     {% endif %}

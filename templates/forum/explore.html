@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Khám phá - ForumVN{% endblock %}
+{% block content %}
+
+<div class="hero text-center mb-4" style="padding: 1.5rem;">
+  <h2 class="fw-bold mb-1"><i class="bi bi-compass-fill me-2"></i>Khám phá</h2>
+  <p class="mb-0 opacity-75">Tìm kiếm cộng đồng và chủ đề thú vị</p>
+</div>
+
+<h5 class="fw-bold mb-3"><i class="bi bi-grid-fill text-primary me-2"></i>Tất cả chuyên mục</h5>
+<div class="row mb-4">
+  {% for category in categories %}
+  <div class="col-md-4 mb-3">
+    <div class="card h-100 topic-row">
+      <div class="card-body d-flex align-items-center gap-3">
+        <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-folder2-open text-white fs-5"></i>
+        </div>
+        <div class="flex-grow-1">
+          <h6 class="mb-1 fw-bold">
+            <a href="{% url 'forum:category_detail' category.slug %}" class="text-decoration-none text-dark">{{ category.name }}</a>
+          </h6>
+          <small class="text-muted">{{ category.description|truncatechars:50 }}</small>
+          <div class="mt-1">
+            <span class="badge bg-light text-muted border"><i class="bi bi-chat me-1"></i>{{ category.topic_count }} chủ đề</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<ul class="nav nav-pills mb-3">
+  <li class="nav-item">
+    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#hot">
+      <i class="bi bi-fire me-1"></i>Nổi bật
+    </button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#newest">
+      <i class="bi bi-clock me-1"></i>Mới nhất
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="hot">
+    {% for topic in hot_topics %}
+    <div class="card mb-2 topic-row">
+      <div class="card-body py-2 px-3">
+        <div class="d-flex align-items-start gap-2">
+          <div class="avatar-circle mt-1" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0;">
+            {{ topic.author.username|first|upper }}
+          </div>
+          <div class="flex-grow-1">
+            <a href="{% url 'forum:topic_detail' topic.pk %}" class="text-decoration-none text-dark fw-semibold">
+              {% if topic.is_pinned %}<span class="badge bg-danger me-1">Ghim</span>{% endif %}
+              {{ topic.title }}
+            </a>
+            <div class="text-muted" style="font-size:0.8rem;">
+              {{ topic.author.username }} · {{ topic.created_at|date:"d/m/Y" }} ·
+              <i class="bi bi-eye me-1"></i>{{ topic.views }} ·
+              <i class="bi bi-chat me-1"></i>{{ topic.post_count }}
+            </div>
+          </div>
+          <span class="badge bg-light text-muted border">{{ topic.category.name }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="tab-pane fade" id="newest">
+    {% for topic in new_topics %}
+    <div class="card mb-2 topic-row">
+      <div class="card-body py-2 px-3">
+        <div class="d-flex align-items-start gap-2">
+          <div class="avatar-circle mt-1" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0;">
+            {{ topic.author.username|first|upper }}
+          </div>
+          <div class="flex-grow-1">
+            <a href="{% url 'forum:topic_detail' topic.pk %}" class="text-decoration-none text-dark fw-semibold">
+              {{ topic.title }}
+            </a>
+            <div class="text-muted" style="font-size:0.8rem;">
+              {{ topic.author.username }} · {{ topic.created_at|date:"d/m/Y" }} ·
+              <i class="bi bi-eye me-1"></i>{{ topic.views }} ·
+              <i class="bi bi-chat me-1"></i>{{ topic.posts.count }}
+            </div>
+          </div>
+          <span class="badge bg-light text-muted border">{{ topic.category.name }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

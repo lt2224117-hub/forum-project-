@@ -5,6 +5,7 @@ app_name = 'forum'
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('explore/', views.explore, name='explore'),
     path('category/<slug:slug>/', views.category_detail, name='category_detail'),
     path('topic/create/<slug:category_slug>/', views.topic_create, name='topic_create'),
     path('topic/<int:pk>/', views.topic_detail, name='topic_detail'),

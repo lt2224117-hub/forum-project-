@@ -18,6 +18,17 @@ def home(request):
         'recent_topics': recent_topics,
         'sort': sort,
     })
+def explore(request):
+    categories = Category.objects.annotate(topic_count=Count('topics')).order_by('-topic_count')
+    hot_topics = Topic.objects.select_related('author', 'category').annotate(
+        post_count=Count('posts')
+    ).order_by('-views', '-post_count')[:20]
+    new_topics = Topic.objects.select_related('author', 'category').order_by('-created_at')[:20]
+    return render(request, 'forum/explore.html', {
+        'categories': categories,
+        'hot_topics': hot_topics,
+        'new_topics': new_topics,
+    })
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)

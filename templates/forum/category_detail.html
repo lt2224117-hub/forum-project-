@@ -2,22 +2,44 @@
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-<h4>{{ category.name }}</h4>
-{% if user.is_authenticated %}
-<a href="{% url 'forum:topic_create' category.slug %}" class="btn btn-primary">+ Tao chu de</a>
-{% endif %}
+  <div>
+    <h4 class="fw-bold mb-0">{{ category.name }}</h4>
+    <small class="text-muted">{{ category.description }}</small>
+  </div>
+  <div class="d-flex gap-2 align-items-center">
+    <a href="?sort=new" class="btn btn-sm {% if sort == 'new' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+      <i class="bi bi-clock me-1"></i>Mới nhất
+    </a>
+    <a href="?sort=popular" class="btn btn-sm {% if sort == 'popular' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+      <i class="bi bi-fire me-1"></i>Phổ biến
+    </a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'forum:topic_create' category.slug %}" class="btn btn-primary btn-sm">+ Tạo chủ đề</a>
+    {% endif %}
+  </div>
 </div>
+
 {% for topic in topics %}
-<div class="card mb-2">
-<div class="card-body">
-{% if topic.is_pinned %}<span class="badge bg-danger">Ghim</span>{% endif %}
-{% if topic.is_locked %}<span class="badge bg-warning">Khoa</span>{% endif %}
-<a href="{% url 'forum:topic_detail' topic.pk %}" class="fw-semibold text-decoration-none">{{ topic.title }}</a>
-<br><small class="text-muted">{{ topic.author.username }} - {{ topic.created_at|date:"d/m/Y" }}</small>
-<span class="float-end"><span class="badge bg-secondary">{{ topic.views }} luot xem</span> <span class="badge bg-info">{{ topic.posts.count }} binh luan</span></span>
-</div>
+<div class="card mb-2 topic-row">
+  <div class="card-body py-2 px-3">
+    <div class="d-flex align-items-start gap-2">
+      <div class="avatar-circle mt-1" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0;">
+        {{ topic.author.username|first|upper }}
+      </div>
+      <div class="flex-grow-1">
+        {% if topic.is_pinned %}<span class="badge bg-danger me-1">Ghim</span>{% endif %}
+        {% if topic.is_locked %}<span class="badge bg-warning text-dark me-1">Khóa</span>{% endif %}
+        <a href="{% url 'forum:topic_detail' topic.pk %}" class="fw-semibold text-decoration-none text-dark">{{ topic.title }}</a>
+        <div class="text-muted" style="font-size:0.8rem;">
+          {{ topic.author.username }} · {{ topic.created_at|date:"d/m/Y" }} ·
+          <i class="bi bi-eye me-1"></i>{{ topic.views }} ·
+          <i class="bi bi-chat me-1"></i>{{ topic.posts.count }}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% empty %}
-<div class="alert alert-light text-center">Chua co chu de nao.</div>
+<div class="alert alert-light text-center">Chưa có chủ đề nào.</div>
 {% endfor %}
 {% endblock %}
