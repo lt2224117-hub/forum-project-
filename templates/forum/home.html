@@ -11,7 +11,7 @@
     </a>
     <a href="{% url 'accounts:login' %}" class="btn btn-outline-light px-4">Đăng nhập</a>
     {% else %}
-    <p class="mb-0 fw-bold fs-5">Xin chào, {{ user.username }}! <i class="bi bi-hand-wave"></i></p>
+    <p class="mb-0 fw-bold fs-5">Xin chào, {{ user.username }}! <i class="bi bi-emoji-smile"></i></p>
     {% endif %}
 </div>
 
@@ -43,6 +43,44 @@
         </div>
         {% empty %}
         <div class="alert alert-info">Chưa có chuyên mục. <a href="/admin">Tạo ngay</a></div>
+        {% endfor %}
+
+        <!-- Tab Popular / New -->
+        <div class="d-flex align-items-center gap-2 mb-3 mt-4">
+            <h5 class="fw-bold mb-0"><i class="bi bi-fire text-primary me-2"></i>Chủ đề</h5>
+            <div class="ms-auto d-flex gap-2">
+                <a href="?sort=new" class="btn btn-sm {% if sort == 'new' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+                    <i class="bi bi-clock me-1"></i>Mới nhất
+                </a>
+                <a href="?sort=popular" class="btn btn-sm {% if sort == 'popular' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+                    <i class="bi bi-fire me-1"></i>Phổ biến
+                </a>
+            </div>
+        </div>
+
+        {% for topic in recent_topics %}
+        <div class="card mb-2 topic-row">
+            <div class="card-body py-2 px-3">
+                <div class="d-flex align-items-start gap-2">
+                    <div class="avatar-circle mt-1" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0;">
+                        {{ topic.author.username|first|upper }}
+                    </div>
+                    <div class="flex-grow-1">
+                        <a href="{% url 'forum:topic_detail' topic.pk %}" class="text-decoration-none text-dark fw-semibold">
+                            {% if topic.is_pinned %}<span class="badge bg-danger me-1">Ghim</span>{% endif %}
+                            {% if topic.is_locked %}<span class="badge bg-warning text-dark me-1">Khóa</span>{% endif %}
+                            {{ topic.title }}
+                        </a>
+                        <div class="text-muted" style="font-size:0.8rem;">
+                            {{ topic.author.username }} · {{ topic.created_at|date:"d/m/Y" }} ·
+                            <i class="bi bi-eye me-1"></i>{{ topic.views }} ·
+                            <i class="bi bi-chat me-1"></i>{{ topic.posts.count }}
+                        </div>
+                    </div>
+                    <span class="badge bg-light text-muted border">{{ topic.category.name }}</span>
+                </div>
+            </div>
+        </div>
         {% endfor %}
     </div>
 

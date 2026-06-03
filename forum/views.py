@@ -1,22 +1,41 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Count
 from .models import Category, Topic, Post
 
 def home(request):
     categories = Category.objects.all()
-    recent_topics = Topic.objects.select_related('author', 'category').order_by('-created_at')[:10]
+    sort = request.GET.get('sort', 'new')
+    
+    if sort == 'popular':
+        recent_topics = Topic.objects.select_related('author', 'category').annotate(
+            post_count=Count('posts')
+        ).order_by('-post_count', '-created_at')[:10]
+    else:
+        recent_topics = Topic.objects.select_related('author', 'category').order_by('-created_at')[:10]
+    
     return render(request, 'forum/home.html', {
         'categories': categories,
         'recent_topics': recent_topics,
+        'sort': sort,
     })
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    topics = category.topics.select_related('author').order_by('-is_pinned', '-created_at')
+    sort = request.GET.get('sort', 'new')
+    
+    if sort == 'popular':
+        topics = category.topics.select_related('author').annotate(
+            post_count=Count('posts')
+        ).order_by('-is_pinned', '-post_count', '-created_at')
+    else:
+        topics = category.topics.select_related('author').order_by('-is_pinned', '-created_at')
+    
     return render(request, 'forum/category_detail.html', {
         'category': category,
         'topics': topics,
+        'sort': sort,
     })
 
 def topic_detail(request, pk):
