@@ -7,9 +7,10 @@
   <p class="mb-0 opacity-75">Tìm kiếm cộng đồng và chủ đề thú vị</p>
 </div>
 
-<h5 class="fw-bold mb-3"><i class="bi bi-grid-fill text-primary me-2"></i>Tất cả chuyên mục</h5>
+<!-- Đề xuất chuyên mục -->
+<h5 class="fw-bold mb-3"><i class="bi bi-stars text-primary me-2"></i>Đề xuất cho bạn</h5>
 <div class="row mb-4">
-  {% for category in categories %}
+  {% for category in suggested_categories %}
   <div class="col-md-4 mb-3">
     <div class="card h-100 topic-row">
       <div class="card-body d-flex align-items-center gap-3">
@@ -31,70 +32,65 @@
   {% endfor %}
 </div>
 
-<ul class="nav nav-pills mb-3">
-  <li class="nav-item">
-    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#hot">
+<!-- Lọc theo tag -->
+<h5 class="fw-bold mb-3"><i class="bi bi-tags-fill text-primary me-2"></i>Lọc theo chủ đề</h5>
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="{% url 'forum:explore' %}?sort={{ sort }}" 
+     class="btn btn-sm rounded-pill px-3 {% if not tag %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+    Tất cả
+  </a>
+  {% for tag_val, tag_label in tag_choices %}
+  <a href="{% url 'forum:explore' %}?tag={{ tag_val }}&sort={{ sort }}"
+     class="btn btn-sm rounded-pill px-3 {% if tag == tag_val %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+    {{ tag_label }}
+  </a>
+  {% endfor %}
+</div>
+
+<!-- Tab hot / mới -->
+<div class="d-flex align-items-center gap-2 mb-3">
+  <h5 class="fw-bold mb-0"><i class="bi bi-fire text-primary me-2"></i>Chủ đề</h5>
+  <div class="ms-auto d-flex gap-2">
+    <a href="?sort=hot{% if tag %}&tag={{ tag }}{% endif %}" 
+       class="btn btn-sm rounded-pill px-3 {% if sort == 'hot' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
       <i class="bi bi-fire me-1"></i>Nổi bật
-    </button>
-  </li>
-  <li class="nav-item">
-    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#newest">
+    </a>
+    <a href="?sort=new{% if tag %}&tag={{ tag }}{% endif %}"
+       class="btn btn-sm rounded-pill px-3 {% if sort == 'new' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
       <i class="bi bi-clock me-1"></i>Mới nhất
-    </button>
-  </li>
-</ul>
-
-<div class="tab-content">
-  <div class="tab-pane fade show active" id="hot">
-    {% for topic in hot_topics %}
-    <div class="card mb-2 topic-row">
-      <div class="card-body py-2 px-3">
-        <div class="d-flex align-items-start gap-2">
-          <div class="avatar-circle mt-1" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0;">
-            {{ topic.author.username|first|upper }}
-          </div>
-          <div class="flex-grow-1">
-            <a href="{% url 'forum:topic_detail' topic.pk %}" class="text-decoration-none text-dark fw-semibold">
-              {% if topic.is_pinned %}<span class="badge bg-danger me-1">Ghim</span>{% endif %}
-              {{ topic.title }}
-            </a>
-            <div class="text-muted" style="font-size:0.8rem;">
-              {{ topic.author.username }} · {{ topic.created_at|date:"d/m/Y" }} ·
-              <i class="bi bi-eye me-1"></i>{{ topic.views }} ·
-              <i class="bi bi-chat me-1"></i>{{ topic.post_count }}
-            </div>
-          </div>
-          <span class="badge bg-light text-muted border">{{ topic.category.name }}</span>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-
-  <div class="tab-pane fade" id="newest">
-    {% for topic in new_topics %}
-    <div class="card mb-2 topic-row">
-      <div class="card-body py-2 px-3">
-        <div class="d-flex align-items-start gap-2">
-          <div class="avatar-circle mt-1" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0;">
-            {{ topic.author.username|first|upper }}
-          </div>
-          <div class="flex-grow-1">
-            <a href="{% url 'forum:topic_detail' topic.pk %}" class="text-decoration-none text-dark fw-semibold">
-              {{ topic.title }}
-            </a>
-            <div class="text-muted" style="font-size:0.8rem;">
-              {{ topic.author.username }} · {{ topic.created_at|date:"d/m/Y" }} ·
-              <i class="bi bi-eye me-1"></i>{{ topic.views }} ·
-              <i class="bi bi-chat me-1"></i>{{ topic.posts.count }}
-            </div>
-          </div>
-          <span class="badge bg-light text-muted border">{{ topic.category.name }}</span>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
+    </a>
   </div>
 </div>
+
+{% for topic in topics %}
+<div class="card mb-2 topic-row">
+  <div class="card-body py-2 px-3">
+    <div class="d-flex align-items-start gap-2">
+      <div class="avatar-circle mt-1" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0;">
+        {{ topic.author.username|first|upper }}
+      </div>
+      <div class="flex-grow-1">
+        <a href="{% url 'forum:topic_detail' topic.pk %}" class="text-decoration-none text-dark fw-semibold">
+          {% if topic.is_pinned %}<span class="badge bg-danger me-1">Ghim</span>{% endif %}
+          {{ topic.title }}
+        </a>
+        {% if topic.tag %}
+        <span class="badge ms-1 {% if topic.tag == 'thac_mac' %}bg-danger{% elif topic.tag == 'thao_luan' %}bg-primary{% elif topic.tag == 'danh_gia' %}bg-success{% elif topic.tag == 'chia_se' %}bg-info{% elif topic.tag == 'huong_dan' %}bg-warning text-dark{% endif %}">
+          {{ topic.get_tag_display }}
+        </span>
+        {% endif %}
+        <div class="text-muted" style="font-size:0.8rem;">
+          {{ topic.author.username }} · {{ topic.created_at|date:"d/m/Y" }} ·
+          <i class="bi bi-eye me-1"></i>{{ topic.views }} ·
+          <i class="bi bi-chat me-1"></i>{{ topic.post_count }}
+        </div>
+      </div>
+      <span class="badge bg-light text-muted border">{{ topic.category.name }}</span>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="alert alert-light text-center">Không có chủ đề nào.</div>
+{% endfor %}
 
 {% endblock %}

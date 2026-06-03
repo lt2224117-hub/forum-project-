@@ -19,15 +19,40 @@ def home(request):
         'sort': sort,
     })
 def explore(request):
+    tag = request.GET.get('tag', '')
+    sort = request.GET.get('sort', 'hot')
+    
     categories = Category.objects.annotate(topic_count=Count('topics')).order_by('-topic_count')
-    hot_topics = Topic.objects.select_related('author', 'category').annotate(
+    
+    topics = Topic.objects.select_related('author', 'category').annotate(
         post_count=Count('posts')
-    ).order_by('-views', '-post_count')[:20]
-    new_topics = Topic.objects.select_related('author', 'category').order_by('-created_at')[:20]
+    )
+    if tag:
+        topics = topics.filter(tag=tag)
+    
+    if sort == 'new':
+        topics = topics.order_by('-created_at')[:20]
+    else:
+        topics = topics.order_by('-views', '-post_count')[:20]
+
+    # Đề xuất: chuyên mục có nhiều chủ đề nhất
+    suggested_categories = categories[:6]
+
+    TAG_CHOICES = [
+        ('thac_mac', 'Thắc mắc'),
+        ('thao_luan', 'Thảo luận'),
+        ('danh_gia', 'Đánh giá'),
+        ('chia_se', 'Chia sẻ'),
+        ('huong_dan', 'Hướng dẫn'),
+    ]
+
     return render(request, 'forum/explore.html', {
         'categories': categories,
-        'hot_topics': hot_topics,
-        'new_topics': new_topics,
+        'suggested_categories': suggested_categories,
+        'topics': topics,
+        'sort': sort,
+        'tag': tag,
+        'tag_choices': TAG_CHOICES,
     })
 
 def category_detail(request, slug):
