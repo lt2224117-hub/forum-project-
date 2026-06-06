@@ -121,18 +121,20 @@ function vote(topicId, value) {
     const upBtn = document.getElementById(`upvote-btn-${topicId}`);
     const downBtn = document.getElementById(`downvote-btn-${topicId}`);
 
+    
     upBtn.className = 'btn btn-sm btn-outline-success';
     downBtn.className = 'btn btn-sm btn-outline-danger';
+    upBtn.classList.remove('pulse');
+    downBtn.classList.remove('pulse');
 
     if (data.user_vote === 1) {
-      upBtn.className = 'btn btn-sm btn-success';
-      upBtn.classList.add('pulse');
+      upBtn.className = 'btn btn-sm btn-success pulse';
       setTimeout(() => upBtn.classList.remove('pulse'), 300);
     } else if (data.user_vote === -1) {
-      downBtn.className = 'btn btn-sm btn-danger';
-      downBtn.classList.add('pulse');
+      downBtn.className = 'btn btn-sm btn-danger pulse';
       setTimeout(() => downBtn.classList.remove('pulse'), 300);
     }
+    
   });
 }
 
@@ -145,8 +147,7 @@ function likePost(postId, btn) {
     const countEl = document.getElementById(`like-count-${postId}`);
     countEl.textContent = data.count;
     if (data.liked) {
-      btn.className = 'btn btn-sm btn-danger float-end';
-      btn.classList.add('pulse');
+      btn.className = 'btn btn-sm btn-danger float-end pulse';
       setTimeout(() => btn.classList.remove('pulse'), 300);
     } else {
       btn.className = 'btn btn-sm btn-outline-danger float-end';
