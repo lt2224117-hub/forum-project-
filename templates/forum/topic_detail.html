@@ -41,12 +41,6 @@
         id="upvote-btn-{{ topic.pk }}">
         <i class="bi bi-arrow-up-circle-fill me-1"></i>Upvote
       </button>
-      <span class="fw-bold" id="vote-total-{{ topic.pk }}">
-        {% with total=0 %}
-        {% for v in topic.votes.all %}{% endfor %}
-        {{ topic.votes.all|length }}
-        {% endwith %}
-      </span>
       <button onclick="vote({{ topic.pk }}, -1)"
         class="btn btn-sm {% for v in topic.votes.all %}{% if v.user == user and v.value == -1 %}btn-danger{% endif %}{% endfor %} btn-outline-danger"
         id="downvote-btn-{{ topic.pk }}">
@@ -126,7 +120,6 @@ function vote(topicId, value) {
   .then(data => {
     const upBtn = document.getElementById(`upvote-btn-${topicId}`);
     const downBtn = document.getElementById(`downvote-btn-${topicId}`);
-    const total = document.getElementById(`vote-total-${topicId}`);
 
     upBtn.className = 'btn btn-sm btn-outline-success';
     downBtn.className = 'btn btn-sm btn-outline-danger';
@@ -140,7 +133,6 @@ function vote(topicId, value) {
       downBtn.classList.add('pulse');
       setTimeout(() => downBtn.classList.remove('pulse'), 300);
     }
-    total.textContent = data.total;
   });
 }
 
